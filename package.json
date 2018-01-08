@@ -1,0 +1,54 @@
+{
+  "name": "in-article-ad-tool",
+  "version": "0.1.0",
+  "description": "Tool for inserting ads repeteatedly between DOM elements",
+  "main": "dist/inArticleAdTool",
+  "directories": {
+    "test": "test",
+    "src": "src"
+  },
+  "scripts": {
+    "test": "mocha",
+    "build": "rollup -c && rollup -c --environment optimize",
+    "build:dev": "rollup -c --watch"
+  },
+  "keywords": [
+    "javascript",
+    "nodejs",
+    "inArticleAd",
+    "google"
+  ],
+  "author": "Albert Gonzalez",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
+    "eslint": "^4.14.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "jsdom": "^11.5.1",
+    "mocha": "^4.1.0",
+    "rollup": "^0.53.3",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-license": "^0.5.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "modules": false
+        }
+      ]
+    ],
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  }
+}
