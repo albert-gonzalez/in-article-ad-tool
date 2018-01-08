@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "Tool for inserting ads repeteatedly between DOM elements",
   "main": "dist/inArticleAdTool",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/albert-gonzalez/in-article-ad-tool.git"
+  },
   "directories": {
     "test": "test",
     "src": "src"
