@@ -1,7 +1,7 @@
 /**
  * in-article-ad-tool
  * Generated: 2018-01-09
- * Version: 0.1.0
+ * Version: 0.2.0
  */
 
 (function (global, factory) {
