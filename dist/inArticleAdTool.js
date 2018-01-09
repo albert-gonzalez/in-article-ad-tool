@@ -1,6 +1,6 @@
 /**
  * in-article-ad-tool
- * Generated: 2018-01-08
+ * Generated: 2018-01-09
  * Version: 0.1.0
  */
 
@@ -17,17 +17,28 @@ function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in ob
 var FIRST_APPEARANCE_DEFAULT = 3;
 var INSERT_EVERY_DEFAULT = 3;
 var ELEMENT_SELECTOR_DEFAULT = 'p';
+var LIMIT_DEFAULT = 0;
 
 function init() {
   var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
   var containerSelector = _ref.containerSelector,
-      options = _objectWithoutProperties(_ref, ['containerSelector']);
+      _ref$limit = _ref.limit,
+      limit = _ref$limit === undefined ? LIMIT_DEFAULT : _ref$limit,
+      options = _objectWithoutProperties(_ref, ['containerSelector', 'limit']);
 
-  validateParams(_extends({ containerSelector: containerSelector }, options));
+  validateParams(_extends({ containerSelector: containerSelector, limit: limit }, options));
+  var adsInserted = 0;
+  var hasLimit = limit > 0;
 
   document.querySelectorAll(containerSelector).forEach(function (element, index) {
-    return insertAdsIntoText(_extends({ element: element, index: index }, options));
+    if (!hasLimit || adsInserted < limit) {
+      adsInserted += insertAdsIntoText(_extends({ element: element, index: index, limit: limit }, options));
+
+      if (hasLimit) {
+        options.limit -= adsInserted;
+      }
+    }
   });
 }
 
@@ -39,7 +50,9 @@ function validateParams(_ref2) {
       _ref2$firstAppearance = _ref2.firstAppearance,
       firstAppearance = _ref2$firstAppearance === undefined ? FIRST_APPEARANCE_DEFAULT : _ref2$firstAppearance,
       _ref2$insertEvery = _ref2.insertEvery,
-      insertEvery = _ref2$insertEvery === undefined ? INSERT_EVERY_DEFAULT : _ref2$insertEvery;
+      insertEvery = _ref2$insertEvery === undefined ? INSERT_EVERY_DEFAULT : _ref2$insertEvery,
+      _ref2$limit = _ref2.limit,
+      limit = _ref2$limit === undefined ? LIMIT_DEFAULT : _ref2$limit;
 
   if (typeof containerSelector !== 'string') {
     throw new Error('containerSelector should be a String');
@@ -67,6 +80,14 @@ function validateParams(_ref2) {
 
   if (insertEvery < 0) {
     throw new Error('insertEvery should be >= 0');
+  }
+
+  if (typeof limit !== 'number') {
+    throw new Error('limit should be a Number');
+  }
+
+  if (limit < 0) {
+    throw new Error('limit should be >= 0');
   }
 }
 
@@ -97,10 +118,18 @@ function filterElementsByPosition(_ref4) {
   return index === 0 || insertEvery > 0 && index % insertEvery === 0;
 }
 
-function insertAdAfterElement(_ref5) {
-  var element = _ref5.element,
-      index = _ref5.index,
-      adCode = _ref5.adCode;
+function filterElementsByLimit(_ref5) {
+  var index = _ref5.index,
+      _ref5$limit = _ref5.limit,
+      limit = _ref5$limit === undefined ? LIMIT_DEFAULT : _ref5$limit;
+
+  return limit === 0 || limit > 0 && index < limit;
+}
+
+function insertAdAfterElement(_ref6) {
+  var element = _ref6.element,
+      index = _ref6.index,
+      adCode = _ref6.adCode;
 
   {
     var adCodeElement = document.createElement('div');
@@ -134,11 +163,11 @@ function insertAdAfterElement(_ref5) {
   }
 }
 
-function insertAdsIntoText(_ref6) {
-  var element = _ref6.element,
-      index = _ref6.index,
-      elementSelector = _ref6.elementSelector,
-      options = _objectWithoutProperties(_ref6, ['element', 'index', 'elementSelector']);
+function insertAdsIntoText(_ref7) {
+  var element = _ref7.element,
+      index = _ref7.index,
+      elementSelector = _ref7.elementSelector,
+      options = _objectWithoutProperties(_ref7, ['element', 'index', 'elementSelector']);
 
   element.setAttribute('data-in-article-container', index);
 
@@ -148,9 +177,13 @@ function insertAdsIntoText(_ref6) {
     return filterElementsAfterFirstAppereance(_extends({ element: element, index: index }, options));
   }).filter(function (element, index) {
     return filterElementsByPosition(_extends({ index: index }, options));
+  }).filter(function (element, index) {
+    return filterElementsByLimit(_extends({ index: index }, options));
   }).forEach(function (element, index) {
     insertAdAfterElement(_extends({ element: element, index: index }, options));
   });
+
+  return elements.length;
 }
 
 var inArticleAdTool = {

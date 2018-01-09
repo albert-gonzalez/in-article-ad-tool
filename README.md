@@ -31,7 +31,8 @@ npm install in-article-ad-tool
 * elementSelector: CSS Selector of the container's children. Default: 'p'.
 * adCode: Ad Code that will be inserted. It can be an String or a function. Required.
 * firstAppearance: Number of elements needed before the first ad will be inserted. Default: 3.
-* insertEvery: Number of elements needed before the ad will be inserted again. If this value is 0 the ad will not be inserted again. Default: 3
+* insertEvery: Number of elements needed before the ad will be inserted again. If this value is 0 the ad will not be inserted again. Default: 3.
+* limit: Limit of ads that will be inserted. If 0 there is no limit. Default: 0.
 
 ### Example
 

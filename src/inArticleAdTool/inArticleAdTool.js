@@ -1,16 +1,33 @@
 const FIRST_APPEARANCE_DEFAULT = 3;
 const INSERT_EVERY_DEFAULT = 3;
 const ELEMENT_SELECTOR_DEFAULT = 'p';
+const LIMIT_DEFAULT = 0;
 
-function init ({ containerSelector, ...options } = {}) {
-  validateParams({ containerSelector, ...options });
+function init ({ containerSelector, limit = LIMIT_DEFAULT, ...options } = {}) {
+  validateParams({ containerSelector, limit, ...options });
+  let adsInserted = 0;
+  let hasLimit = limit > 0;
 
   document.querySelectorAll(containerSelector).forEach(
-    (element, index) => insertAdsIntoText({ element, index, ...options })
+    (element, index) => {
+      if (!hasLimit || adsInserted < limit) {
+        adsInserted += insertAdsIntoText({ element, index, limit, ...options });
+
+        if (hasLimit) {
+          options.limit -= adsInserted;
+        }
+      }
+    }
   );
 };
 
-function validateParams ({ containerSelector, elementSelector = ELEMENT_SELECTOR_DEFAULT, adCode, firstAppearance = FIRST_APPEARANCE_DEFAULT, insertEvery = INSERT_EVERY_DEFAULT }) {
+function validateParams ({ containerSelector,
+  elementSelector = ELEMENT_SELECTOR_DEFAULT,
+  adCode,
+  firstAppearance = FIRST_APPEARANCE_DEFAULT,
+  insertEvery = INSERT_EVERY_DEFAULT,
+  limit = LIMIT_DEFAULT
+}) {
   if (typeof containerSelector !== 'string') {
     throw new Error('containerSelector should be a String');
   }
@@ -38,6 +55,14 @@ function validateParams ({ containerSelector, elementSelector = ELEMENT_SELECTOR
   if (insertEvery < 0) {
     throw new Error('insertEvery should be >= 0');
   }
+
+  if (typeof limit !== 'number') {
+    throw new Error('limit should be a Number');
+  }
+
+  if (limit < 0) {
+    throw new Error('limit should be >= 0');
+  }
 }
 
 function insertBefore (element, elementToAdd) {
@@ -56,6 +81,10 @@ function filterElementsAfterFirstAppereance ({ element, index, firstAppearance =
 
 function filterElementsByPosition ({ index, insertEvery = INSERT_EVERY_DEFAULT }) {
   return index === 0 || (insertEvery > 0 && index % insertEvery === 0);
+}
+
+function filterElementsByLimit ({ index, limit = LIMIT_DEFAULT }) {
+  return limit === 0 || (limit > 0 && index < limit);
 }
 
 function insertAdAfterElement ({ element, index, adCode }) {
@@ -102,9 +131,13 @@ function insertAdsIntoText ({ element, index, elementSelector, ...options }) {
     return filterElementsAfterFirstAppereance({ element, index, ...options });
   }).filter((element, index) => {
     return filterElementsByPosition({ index, ...options });
+  }).filter((element, index) => {
+    return filterElementsByLimit({ index, ...options });
   }).forEach((element, index) => {
     insertAdAfterElement({ element, index, ...options });
   });
+
+  return elements.length;
 }
 
 export default {

@@ -49,13 +49,31 @@ describe('inArticleAdTool', () => {
       })).to.throw('insertEvery should be a Number');
     });
 
-    it('should throw error if insertEvery is not a number', () => {
+    it('should throw error if insertEvery is < 0', () => {
       expect(() => inArticleAdTool.init({
         containerSelector: '.container',
         elementSelector: 'p',
         adCode: '<script></script>',
         insertEvery: -1
       })).to.throw('insertEvery should be >= 0');
+    });
+
+    it('should throw error if limit is not a number', () => {
+      expect(() => inArticleAdTool.init({
+        containerSelector: '.container',
+        elementSelector: 'p',
+        adCode: '<script></script>',
+        limit: 'hi'
+      })).to.throw('limit should be a Number');
+    });
+
+    it('should throw error if insertEvery is < 0', () => {
+      expect(() => inArticleAdTool.init({
+        containerSelector: '.container',
+        elementSelector: 'p',
+        adCode: '<script></script>',
+        limit: -1
+      })).to.throw('limit should be >= 0');
     });
   });
 
@@ -166,6 +184,24 @@ data-ad-slot="myslot"></ins>
       expect(elements[5].nodeName).equal('SCRIPT');
       expect(elements[9].nodeName).equal('SCRIPT');
     });
+
+    it('should limit ads when limit > 0', () => {
+      inArticleAdTool.init({
+        containerSelector: '.container',
+        elementSelector: 'div',
+        adCode: '<script>MyCode</script>',
+        firstAppearance: 3,
+        limit: 2,
+        insertEvery: 2
+      });
+
+      let elements = global.document.querySelectorAll('.container > *');
+
+      expect(elements.length).equal(11);
+      expect(global.document.querySelectorAll('script').length).equal(2);
+      expect(elements[2].nodeName).equal('SCRIPT');
+      expect(elements[5].nodeName).equal('SCRIPT');
+    });
   });
 
   describe('multiple container', () => {
@@ -248,6 +284,24 @@ data-ad-slot="myslot"></ins>
         expect(elements[10].nodeName).equal('SCRIPT');
         expect(elements[17].nodeName).equal('SCRIPT');
       });
+    });
+
+    it('should limit ads when limit > 0', () => {
+      inArticleAdTool.init({
+        containerSelector: '.container',
+        elementSelector: 'div',
+        adCode: '<script>MyCode</script>',
+        firstAppearance: 3,
+        limit: 2,
+        insertEvery: 2
+      });
+
+      let elements = global.document.querySelectorAll('.container > *');
+
+      expect(elements.length).equal(20);
+      expect(global.document.querySelectorAll('script').length).equal(2);
+      expect(elements[2].nodeName).equal('SCRIPT');
+      expect(elements[5].nodeName).equal('SCRIPT');
     });
   });
 });
