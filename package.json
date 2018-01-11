@@ -1,7 +1,7 @@
 {
   "name": "in-article-ad-tool",
-  "version": "0.2.0",
-  "description": "Tool for inserting ads repeteatedly between DOM elements",
+  "version": "0.2.1",
+  "description": "Tool for inserting ads repeatedly between DOM elements",
   "main": "dist/inArticleAdTool",
   "repository": {
     "type": "git",
