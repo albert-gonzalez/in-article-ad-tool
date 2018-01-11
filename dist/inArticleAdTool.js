@@ -1,7 +1,7 @@
 /**
  * in-article-ad-tool
- * Generated: 2018-01-09
- * Version: 0.2.0
+ * Generated: 2018-01-11
+ * Version: 0.2.2
  */
 
 (function (global, factory) {
@@ -33,11 +33,8 @@ function init() {
 
   document.querySelectorAll(containerSelector).forEach(function (element, index) {
     if (!hasLimit || adsInserted < limit) {
-      adsInserted += insertAdsIntoText(_extends({ element: element, index: index, limit: limit }, options));
-
-      if (hasLimit) {
-        options.limit -= adsInserted;
-      }
+      var newlimit = hasLimit ? limit - adsInserted : 0;
+      adsInserted += insertAdsIntoText(_extends({ element: element, index: index, limit: newlimit }, options));
     }
   });
 }
@@ -173,17 +170,19 @@ function insertAdsIntoText(_ref7) {
 
   var elements = convertNodeListToArray(element.querySelectorAll('[data-in-article-container="' + index + '"] > ' + elementSelector));
 
-  elements.filter(function (element, index) {
+  var filteredElements = elements.filter(function (element, index) {
     return filterElementsAfterFirstAppereance(_extends({ element: element, index: index }, options));
   }).filter(function (element, index) {
     return filterElementsByPosition(_extends({ index: index }, options));
   }).filter(function (element, index) {
     return filterElementsByLimit(_extends({ index: index }, options));
-  }).forEach(function (element, index) {
+  });
+
+  filteredElements.forEach(function (element, index) {
     insertAdAfterElement(_extends({ element: element, index: index }, options));
   });
 
-  return elements.length;
+  return filteredElements.length;
 }
 
 var inArticleAdTool = {
