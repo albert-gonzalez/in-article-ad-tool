@@ -11,11 +11,8 @@ function init ({ containerSelector, limit = LIMIT_DEFAULT, ...options } = {}) {
   document.querySelectorAll(containerSelector).forEach(
     (element, index) => {
       if (!hasLimit || adsInserted < limit) {
-        adsInserted += insertAdsIntoText({ element, index, limit, ...options });
-
-        if (hasLimit) {
-          options.limit -= adsInserted;
-        }
+        const newlimit = hasLimit ? limit - adsInserted : 0;
+        adsInserted += insertAdsIntoText({ element, index, limit: newlimit, ...options });
       }
     }
   );
@@ -127,17 +124,19 @@ function insertAdsIntoText ({ element, index, elementSelector, ...options }) {
     element.querySelectorAll(`[data-in-article-container="${index}"] > ${elementSelector}`)
   );
 
-  elements.filter((element, index) => {
+  let filteredElements = elements.filter((element, index) => {
     return filterElementsAfterFirstAppereance({ element, index, ...options });
   }).filter((element, index) => {
     return filterElementsByPosition({ index, ...options });
   }).filter((element, index) => {
     return filterElementsByLimit({ index, ...options });
-  }).forEach((element, index) => {
+  });
+
+  filteredElements.forEach((element, index) => {
     insertAdAfterElement({ element, index, ...options });
   });
 
-  return elements.length;
+  return filteredElements.length;
 }
 
 export default {
