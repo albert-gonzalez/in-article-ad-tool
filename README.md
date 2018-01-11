@@ -11,7 +11,7 @@ npm install in-article-ad-tool
 ### SCRIPT
 
 ```html
-<script src="inArticleAdToolPath/dist/inArticleAdTool.min.js">
+<script src="inArticleAdToolPath/dist/inArticleAdTool.min.js"></script>
 <script>
     inArticleAdTool.init(options);
 </script>
