@@ -4,7 +4,9 @@ Tool for inserting an Ad repeatedly between elements. Is designed for Google's i
 
 ## INSTALL
 
+```
 npm install in-article-ad-tool
+```
 
 ## USAGE
 
